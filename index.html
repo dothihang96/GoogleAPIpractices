@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Google API Practices</title>
+    <style>
+        /* Set the size of the div element that contains the map */
+        #map {
+            height: 700px;
+            /* The height is 400 pixels */
+            width: 100%;
+            /* The width is the width of the web page */
+        }
+
+        html {
+            font-size: 30px;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+
+<body>
+
+    <!--The div element for the map -->
+    <div class="ml-3 mt-5">
+        <h1>新竹地圖</h1>
+        <div class="row mt-5">
+            <div id="map" class="col-7"></div>
+            <div class="col-2 ml-5">
+                <ul>
+                    <li><a href="/gmap/bike.html">新竹腳踏車</a></li>
+                    <li><a href="/gmap/planningmap.html">新竹景點規劃</a></li>
+                    <li><a href="/gmap/faremap.html">預估交通</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8_leVd8LRKxvNf0wUTOpr8J8PP6P5GTI
+    &callback=initMap">
+    </script>
+    <script>
+        function initMap() {
+            // The location of hsinchu
+            var hsinchu = { lat: 24.8016170, lng: 120.971574 };
+            // The map, centered at hsinchu
+            var map = new google.maps.Map(
+                document.getElementById('map'), { zoom: 15, center: hsinchu });
+        }
+    </script>
+
+</body>
+
+</html>

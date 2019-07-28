@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/da8718fa-04ec-4490-89bc-e5f6b4dcf2f8/resourceGroups/BuildSchool2019Training_ResourcesGroup/providers/Microsoft.Web/sites/Google-API-Practices",
+    "appService.deploySubpath": ""
+}

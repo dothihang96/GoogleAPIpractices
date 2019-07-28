@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Hsinchu Bike Maps </title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+
+<body>
+
+    <!--The div element for the map -->
+    <div class="container mt-5">
+        <h3>Hsinchu 腳踏車</h3>
+        <div id="map"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8_leVd8LRKxvNf0wUTOpr8J8PP6P5GTI
+    &callback=initMap">
+    </script>
+    <script>
+        // Initialize and add the map
+        function initMap() {
+            // The location of hsinchu
+            var hsinchu = { lat: 24.8016170, lng: 120.971574 };
+            // The map, centered at hsinchu
+            var map = new google.maps.Map(
+                document.getElementById('map'), { zoom: 15, center: hsinchu });
+            $("#map").css({ "width": "1000px", "height": "600px" });
+            var url = "http://opendata.hccg.gov.tw/dataset/1f334249-9b55-4c42-aec1-5a8a8b5e07ca/resource/4d5edb22-a15e-4097-8635-8e32f7db601a/download/20180212143756340.json";
+            $.ajax({
+                type: "get",
+                url: url,
+                // data: "data",
+                dataType: "json",
+            }).done(function (data) {
+                for (var item of data) {
+                    var itemMap = new google.maps.Marker({
+                        position: {
+                            lat: parseFloat(item.緯度),
+                            lng: parseFloat(item.經度)
+                        },
+                        map: map,
+                        icon: "http://icons.iconarchive.com/icons/aha-soft/transport/48/bike-icon.png",
+                        title: item.站點名稱
+                    });
+                }
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>

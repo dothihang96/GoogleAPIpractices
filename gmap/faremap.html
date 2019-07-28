@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fare Map</title>
+    <style>
+        /* Set the size of the div element that contains the map */
+        #map {
+            height: 800px;
+            /* The height is 400 pixels */
+            width: 65%;
+            /* The width is the width of the web page */
+        }
+
+        html {
+            font-size: 25px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+
+<body>
+
+    <!--The div element for the map -->
+    <div class=" mx-5 mt-5 mb-5 ">
+        <h2 class="text-center pb-3">預估交通費用</h2>
+        <div class="row">
+            <div id="map" class="mr-5 col-6"></div>
+            <div class="col-2">
+                <div class="p-2 mb-3">
+                    <h4>自行開車</h4>
+                    距離: <span id="driving-distance"></span> <br>
+                    收費路段: <span></span> <br>
+                    時間: <span id="driving-time"></span> <br>
+                    費用: <span></span>
+                </div>
+                <div class="p-2 mb-3">
+                    <h4>搭計程車</h4>
+                    距離: <span id="taxi-distance"></span> <br>
+                    收費路段: <span></span> <br>
+                    時間: <span id="taxi-time"></span> <br>
+                    費用: <span></span>
+                </div>
+                <div class="p-2 mb-3">
+                    <h4>大眾運輸</h4>
+                    距離: <span id="walking-distance"></span> <br>
+                    時間: <span id="walking-time"></span> <br>
+                    費用: <span id="pay-for-walking"></span>
+                </div>
+            </div>
+            <div class="col-3" id="right-panel">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8_leVd8LRKxvNf0wUTOpr8J8PP6P5GTI
+    &callback=initMap">
+    </script>
+    <script>
+        var point1 = null;
+        var point2 = null;
+        // Initialize and add the map
+        function initMap() {
+            // The location of hsinchu
+            var hsinchu = { lat: 24.8016170, lng: 120.971574 };
+            // The map, centered at hsinchu
+            var map = new google.maps.Map(
+                document.getElementById('map'), { zoom: 15, center: hsinchu });
+
+            var directionsDisplay = new google.maps.DirectionsRenderer;
+            var directionsService = new google.maps.DirectionsService;
+            directionsDisplay.setMap(map);
+            directionsDisplay.setPanel(document.getElementById('right-panel'));
+
+            // var onChangeHandler = function () {
+            //     calculateAndDisplayRoute(directionsService, directionsDisplay);
+            // };
+
+            map.addListener('click', function (e) {
+                if (point1 == null) {
+                    point1 = e.latLng.lat() + "," + e.latLng.lng();
+                    return;
+                }
+                if (point2 == null) {
+                    point2 = e.latLng.lat() + "," + e.latLng.lng();
+                }
+                if (point1 != null && point2 != null) {
+                    calculateAndDisplayRoute(directionsService, directionsDisplay, 'TRANSIT');
+                    calculateAndDisplayRoute(directionsService, directionsDisplay, 'DRIVING');
+                }
+            })
+        }
+
+        function calculateAndDisplayRoute(directionsService, directionsDisplay, travelMode) {
+            directionsService.route({
+                origin: point1,
+                destination: point2,
+                travelMode: travelMode
+            }, function (response, status) {
+                if (status === 'OK') {
+                    directionsDisplay.setDirections(response);
+                    var leg = response.routes[0].legs[0];
+                    var Distances = 0;
+                    var Time = 0;
+                    for (var step of leg.steps) {
+                        Distances += parseInt(step.distance.value) / 1000;
+                        Time += parseInt(step.duration.value) / 60;
+                        Distances = Math.round(Distances * 100) / 100;
+                        Time = Math.round(Time * 100) / 100;
+                    }
+                    if (travelMode == 'TRANSIT') {
+                        document.getElementById("walking-distance").innerText = Distances + "公里";
+                        document.getElementById("walking-time").innerText = Time + "分鐘";
+                        document.getElementById("pay-for-walking").innerText =  "查不到票價";
+
+                    }
+                    if(travelMode=='DRIVING'){
+                        document.getElementById("driving-distance").innerText = Distances + "公里";
+                        document.getElementById("driving-time").innerText = Time + "分鐘";
+                        document.getElementById("taxi-distance").innerText = Distances + "公里";
+                        document.getElementById("taxi-time").innerText = Time + "分鐘";
+                    }
+                }
+                else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>
